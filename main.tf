@@ -1,40 +1,48 @@
-variable "env" {}
+# variable "name" {
 
-data "template_file" "httpd_user_data" {
-  template = file("./user_data.sh.tpl")
+# }
 
-  vars = {
-      package = "httpd"
-  }
-}
+# variable "policy" {
+
+# }
+
+# variable "identifier" {
+
+# }
+
+# resource "aws_iam_role" "default" {
+#   name = var.name
+#   assume_role_policy = data.aws_iam_policy_document.assume_role.json
+# }
+
+# data "aws_iam_policy_document" "assume_role" {
+#     statement {
+#         actions = ["sts:AssumeRole"]
+
+#         principals {
+#             type = "Service"
+#             identifier = [var.identifier]
+#         }
+#     }
+# }
+
+# resource "aws_iam_policy" "default" {
+#   name = var.name
+#   policy = var.policy
+# }
+
+# resource "aws_iam_role_policy_attachment" "default" {
+#   role = aws_iam_role.default.name
+#   policy_arn = aws_iam_policy.default.arn
+# }
+
+# output "iam_role_arn" {
+#   value = aws_iam_role.default.arn
+# }
+
+# output "iam_role_name" {
+#   value = aws_iam_policy.default.name
+# }
 
 
-resource "aws_instance" "example" {
-  ami                    = "ami-0f9ae750e8274075b"
-  instance_type          = var.env == "production" ? "m5.large" : "t3.micro"
-  vpc_security_group_ids = [aws_security_group.example_ec2.id]
 
-  user_data = data.template_file.httpd_user_data.rendered
-}
-
-output "example_public_dns" {
-  value = aws_instance.example.public_dns
-}
-
-resource "aws_security_group" "example_ec2" {
-  name = "example-ec2"
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
